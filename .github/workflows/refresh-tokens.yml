@@ -1,0 +1,22 @@
+name: Refresh tokens
+
+on:
+  schedule:
+    - cron: "30 3 1,15 * *"   # 1-го і 15-го числа о 03:30 UTC
+  workflow_dispatch: {}
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: Refresh Meta tokens
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: python refresh_tokens.py
